@@ -1,0 +1,22 @@
+# Video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Extracted frame images
+best_frame*.jpg
+best_frame*.png
+best_frame*.jpeg
+
+# Python cache & environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# OS specific files
+.DS_Store
+Thumbs.db
