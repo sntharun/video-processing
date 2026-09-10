@@ -92,6 +92,7 @@ python3 video_processor.py input_video.mp4 -o output/sharp_frame.jpg --max-durat
 | `--frame-step` | — | `int` | `1` | Subsample step (`1` = every frame, `2` = every 2nd frame) |
 | `--crop-fraction` | — | `float` | `0.55` | Central ROI fraction (0.0–1.0) to crop before scoring |
 | `--eval-width` | — | `int` | `640` | Resize width for sharpness scoring (`0` to disable resizing) |
+| `--metric` | — | `str` | `glare_masked_laplacian` | Sharpness metric (`glare_masked_laplacian`, `laplacian`, `tenengrad`) |
 | `--min-sharpness`| — | `float` | `0.0` | Minimum sharpness threshold for `PASS` (`0.0` reports `UNVALIDATED`) |
 
 ---
@@ -112,11 +113,13 @@ result = process_video(
     frame_step=1,
     eval_width=640,
     crop_fraction=0.55,
+    metric="glare_masked_laplacian",
     min_sharpness_threshold=100.0,
 )
 
 print(f"Quality Status: {result['quality_status']}")
-print(f"Best Frame: {result['best_frame']} (Score: {result['sharpness_score']})")
+print(f"Best Frame: {result['best_frame']} (Effective Score: {result['effective_score']})")
+print(f"Metrics — Masked: {result['sharpness_score']}, Raw: {result['raw_sharpness']}, Motion: {result['motion_score']}")
 print(f"Exposure Stats — Glare: {result['overexposure_pct']}%, Mean: {result['underexposure_mean']}, Contrast: {result['contrast_std']}")
 ```
 
@@ -131,7 +134,10 @@ The tool outputs structured JSON to standard output:
 {
   "best_frame": "best_frame.jpg",
   "frame_number": 14,
+  "effective_score": 123.65,
   "sharpness_score": 123.65,
+  "raw_sharpness": 128.40,
+  "motion_score": 1.25,
   "overexposure_pct": 0.45,
   "underexposure_mean": 118.4,
   "contrast_std": 45.2,
@@ -143,7 +149,8 @@ The tool outputs structured JSON to standard output:
     "processed_frames": 90,
     "processing_time_ms": 78.42,
     "eval_width": 640,
-    "crop_fraction": 0.55
+    "crop_fraction": 0.55,
+    "metric": "glare_masked_laplacian"
   }
 }
 ```
